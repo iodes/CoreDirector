@@ -75,6 +75,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x64"
+                    {
+                    "Name" = "8:.NET 데스크톱 런타임 6.0.1 (x64)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x64"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.NetCore.DesktopRuntime.6.0.x86"
+                    {
+                    "Name" = "8:.NET 데스크톱 런타임 6.0.1 (x86)"
+                    "ProductCode" = "8:Microsoft.NetCore.DesktopRuntime.6.0.x86"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -194,7 +215,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CoreDirector"
         "ProductCode" = "8:{86E47086-2A3E-4053-8CC5-2DB11D3A0E56}"
-        "PackageCode" = "8:{A91EED75-B721-4964-B0F2-9844DBA9F9FE}"
+        "PackageCode" = "8:{7CFA1A75-5F12-41B0-80C0-7857897179C8}"
         "UpgradeCode" = "8:{8F4432E0-36E7-41B0-8AC0-65BF0B2F2814}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -793,7 +814,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_59EA39EC930B4F728234263AD189DBA2"
             {
-            "SourcePath" = "8:..\\CoreDirector\\obj\\Debug\\net6.0-windows10.0.18362.0\\apphost.exe"
+            "SourcePath" = "8:..\\CoreDirector\\obj\\Release\\net6.0-windows10.0.18362.0\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_139EDAF55A7E44FCB05A66F1D4BE821E"
