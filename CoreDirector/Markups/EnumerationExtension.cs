@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Markup;
 using CoreDirector.Models.Commons;
 
-namespace CoreDirector.Extensions.Markups
+namespace CoreDirector.Markups
 {
     public class EnumerationExtension : MarkupExtension
     {

@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
-using CoreDirector.Extensions;
 using CoreDirector.Interop;
+using CoreDirector.Managers;
 using CoreDirector.Models;
 using ModernWpf;
 
@@ -105,44 +102,10 @@ namespace CoreDirector
         private void UpdateProcesses()
         {
             _processes.Clear();
-            Process[] processes = Process.GetProcesses();
 
-            try
+            foreach (var appProcess in ProcessManager.GetAppProcesses())
             {
-                IEnumerable<IGrouping<string, Process>> processGroups = processes
-                    .OrderBy(x => x.ProcessName)
-                    .GroupBy(x => x.ProcessName);
-
-                foreach (IGrouping<string, Process> processGroup in processGroups)
-                {
-                    var process = processGroup.FirstOrDefault();
-
-                    if (process is null)
-                        continue;
-
-                    var filePath = process.GetSafeFileName();
-
-                    if (string.IsNullOrEmpty(filePath))
-                        continue;
-
-                    ImageSource? icon = null;
-
-                    Dispatcher.Invoke(() =>
-                    {
-                        icon = !string.IsNullOrEmpty(filePath)
-                            ? System.Drawing.Icon.ExtractAssociatedIcon(filePath)?.ToImageSource()
-                            : default;
-                    });
-
-                    _processes.Add(new AppProcess(process.Id, filePath, icon!));
-                }
-            }
-            finally
-            {
-                foreach (var process in processes)
-                {
-                    process.Dispose();
-                }
+                _processes.Add(appProcess);
             }
         }
     }

@@ -7,13 +7,16 @@ namespace CoreDirector.Utilities
 {
     internal static class ProcessorUtility
     {
+        private static Processor? _processor;
+
         public static void SetAffinity(int processId, CoreType type)
         {
-            var processor = GetProcessor();
+            _processor ??= GetProcessor();
+
             using var process = Process.GetProcessById(processId);
 
-            long defaultAffinity = (1 << processor.ThreadCount) - 1;
-            long performanceAffinity = (1 << processor.ThreadCount - processor.EfficientCoreCount) - 1;
+            long defaultAffinity = (1 << _processor.ThreadCount) - 1;
+            long performanceAffinity = (1 << _processor.ThreadCount - _processor.EfficientCoreCount) - 1;
 
             switch (type)
             {

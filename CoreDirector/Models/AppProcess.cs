@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using CoreDirector.Annotations;
 using CoreDirector.Utilities;
 
 namespace CoreDirector.Models
@@ -11,44 +12,13 @@ namespace CoreDirector.Models
     internal class AppProcess : INotifyPropertyChanged
     {
         #region Properties
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _id;
-
         public string Name => Path.GetFileName(FilePath);
 
-        public string FilePath
-        {
-            get => _filePath;
-            set
-            {
-                _filePath = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(Name));
-            }
-        }
+        public string FilePath { get; }
 
-        private string _filePath;
+        public Bitmap? IconBitmap { get; }
 
-        public ImageSource Icon
-        {
-            get => _icon;
-            set
-            {
-                _icon = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private ImageSource _icon;
+        public IEnumerable<Process> Items { get; }
 
         public CoreType Type
         {
@@ -64,24 +34,31 @@ namespace CoreDirector.Models
         #endregion
 
         #region Constructor
-        public AppProcess(int id, string filePath, ImageSource icon)
+        public AppProcess(string filePath, Bitmap? iconBitmap, IEnumerable<Process> items)
         {
-            _id = id;
-            _filePath = filePath;
-            _icon = icon;
+            FilePath = filePath;
+            IconBitmap = iconBitmap;
+            Items = items;
         }
         #endregion
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             if (propertyName == nameof(Type))
-                Task.Run(() => ProcessorUtility.SetAffinity(Id, Type));
+            {
+                Task.Run(() =>
+                {
+                    foreach (var item in Items)
+                    {
+                        ProcessorUtility.SetAffinity(item.Id, Type);
+                    }
+                });
+            }
         }
         #endregion
     }
