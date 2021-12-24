@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Logo.ico</ApplicationIcon>
+    <Company>Kodnix</Company>
   </PropertyGroup>
 
   <ItemGroup>
