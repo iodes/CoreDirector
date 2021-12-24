@@ -12,6 +12,9 @@ namespace CoreDirector.Managers
         {
             get
             {
+                if (_config is not null)
+                    return _config;
+
                 if (!File.Exists(EnvironmentSupport.Config))
                 {
                     _config = new AppConfig();
@@ -19,7 +22,9 @@ namespace CoreDirector.Managers
                 }
 
                 var json = File.ReadAllText(EnvironmentSupport.Config);
-                return _config ??= JsonConvert.DeserializeObject<AppConfig>(json)!;
+                _config = JsonConvert.DeserializeObject<AppConfig>(json)!;
+
+                return _config;
             }
         }
 
