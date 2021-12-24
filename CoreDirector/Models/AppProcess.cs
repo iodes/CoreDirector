@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Controls;
+using System.Windows.Media;
 using CoreDirector.Annotations;
 
 namespace CoreDirector.Models
@@ -10,16 +11,19 @@ namespace CoreDirector.Models
         #region Properties
         public string Name { get; init; }
 
-        public Image Icon { get; init; }
+        public string FilePath { get; init; }
+
+        public ImageSource Icon { get; init; }
 
         public CoreType Type { get; set; } = CoreType.Default;
         #endregion
 
         #region Constructor
-        public AppProcess(Image icon, string name)
+        public AppProcess(string filePath, ImageSource icon)
         {
+            FilePath = filePath;
+            Name = Path.GetFileName(filePath);
             Icon = icon;
-            Name = name;
         }
         #endregion
 

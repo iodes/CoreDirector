@@ -6,8 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:tb="http://www.hardcodet.net/taskbar"
     Title="CoreDirector"
-    Width="600"
-    Height="400"
+    Width="500"
+    Height="350"
     Background="Transparent"
     ShowInTaskbar="False"
     Topmost="True"
@@ -36,7 +36,44 @@
             WindowChrome.IsHitTestVisibleInChrome="True">
 
             <TabItem Header="전체">
-                <ListView x:Name="processListView" Background="White" />
+                <ListView
+                    x:Name="processListView"
+                    HorizontalContentAlignment="Stretch"
+                    Background="White"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <Image
+                                    Width="32"
+                                    Height="32"
+                                    Margin="5"
+                                    HorizontalAlignment="Left"
+                                    DockPanel.Dock="Left"
+                                    Source="{Binding Icon}" />
+
+                                <ComboBox
+                                    Width="110"
+                                    Margin="0,0,5,0"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Right"
+                                    SelectedIndex="0">
+
+                                    <ComboBoxItem Content="기본값" />
+                                    <ComboBoxItem Content="성능 코어" />
+                                    <ComboBoxItem Content="효율 코어" />
+                                </ComboBox>
+
+                                <TextBlock
+                                    Margin="0,0,5,0"
+                                    VerticalAlignment="Center"
+                                    Text="{Binding Name}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </TabItem>
             <TabItem Header="성능" />
             <TabItem Header="효율" />

@@ -1,22 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using CoreDirector.Extensions;
 using CoreDirector.Interop;
+using CoreDirector.Models;
 using ModernWpf;
 
 namespace CoreDirector
 {
     public partial class MainWindow
     {
+        #region Fields
+        private readonly object _lock = new();
+
+        private ObservableCollection<AppProcess> _processes { get; } = new();
+        #endregion
+
         #region Constructor
         public MainWindow()
         {
             InitializeComponent();
+            processListView.ItemsSource = _processes;
 
             Loaded += OnLoaded;
+            Activated += OnActivated;
             Deactivated += OnDeactivated;
+
+            BindingOperations.EnableCollectionSynchronization(_processes, _lock);
 
             Hide();
         }
@@ -34,6 +53,16 @@ namespace CoreDirector
                 presentationSource.ContentRendered += PresentationSourceOnContentRendered;
         }
 
+        private void OnActivated(object? sender, EventArgs e)
+        {
+            Task.Run(UpdateProcesses);
+        }
+
+        private void OnDeactivated(object? sender, EventArgs e)
+        {
+            Hide();
+        }
+
         private void PresentationSourceOnContentRendered(object? sender, EventArgs e)
         {
             if (sender is not HwndSource hwndSource)
@@ -47,11 +76,6 @@ namespace CoreDirector
         {
             Show();
             Activate();
-        }
-
-        private void OnDeactivated(object? sender, EventArgs e)
-        {
-            Hide();
         }
         #endregion
 
@@ -78,5 +102,34 @@ namespace CoreDirector
             EnableMica(hwnd, ThemeManager.Current.ActualApplicationTheme is ApplicationTheme.Dark);
         }
         #endregion
+
+        private void UpdateProcesses()
+        {
+            _processes.Clear();
+
+            IEnumerable<IGrouping<string, Process>> processes = Process.GetProcesses()
+                .OrderBy(x => x.ProcessName)
+                .GroupBy(x => x.ProcessName);
+
+            foreach (IGrouping<string, Process> processGroup in processes)
+            {
+                var process = processGroup.FirstOrDefault();
+                var filePath = process?.GetSafeFileName();
+
+                if (string.IsNullOrEmpty(filePath))
+                    continue;
+
+                ImageSource? icon = null;
+
+                Dispatcher.Invoke(() =>
+                {
+                    icon = !string.IsNullOrEmpty(filePath)
+                        ? System.Drawing.Icon.ExtractAssociatedIcon(filePath)?.ToImageSource()
+                        : new BitmapImage();
+                });
+
+                _processes.Add(new AppProcess(filePath, icon!));
+            }
+        }
     }
 }
