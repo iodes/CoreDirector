@@ -174,6 +174,9 @@ namespace CoreDirector
 
         private void EnableMica(HwndSource source, bool darkThemeEnabled)
         {
+            if (Environment.OSVersion.Version.Build < 22000)
+                return;
+
             int trueValue = 0x01;
             int falseValue = 0x00;
 
