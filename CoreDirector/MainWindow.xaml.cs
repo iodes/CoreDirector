@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -68,6 +69,29 @@ namespace CoreDirector
             ThemeManager.Current.ActualApplicationThemeChanged += delegate { UpdateStyleAttributes(hwndSource); };
         }
 
+        private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var collectionView = CollectionViewSource.GetDefaultView(processListView.ItemsSource) as CollectionView;
+
+            if (collectionView is null)
+                return;
+
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    collectionView.Filter = null;
+                    break;
+
+                case 1:
+                    collectionView.Filter = o => FilterListView(o, CoreType.Performance);
+                    break;
+
+                case 2:
+                    collectionView.Filter = o => FilterListView(o, CoreType.Efficient);
+                    break;
+            }
+        }
+
         private void TaskbarIcon_OnTrayLeftMouseUp(object sender, RoutedEventArgs e)
         {
             Show();
@@ -76,6 +100,16 @@ namespace CoreDirector
         #endregion
 
         #region Private Methods
+        private void UpdateProcesses()
+        {
+            _processes.Clear();
+
+            foreach (var appProcess in ProcessManager.GetAppProcesses())
+            {
+                _processes.Add(appProcess);
+            }
+        }
+
         private void EnableMica(HwndSource source, bool darkThemeEnabled)
         {
             int trueValue = 0x01;
@@ -97,16 +131,14 @@ namespace CoreDirector
         {
             EnableMica(hwnd, ThemeManager.Current.ActualApplicationTheme is ApplicationTheme.Dark);
         }
-        #endregion
 
-        private void UpdateProcesses()
+        private bool FilterListView(object item, CoreType type)
         {
-            _processes.Clear();
+            if (item is not AppProcess appProcess)
+                return false;
 
-            foreach (var appProcess in ProcessManager.GetAppProcesses())
-            {
-                _processes.Add(appProcess);
-            }
+            return appProcess.Type == type;
         }
+        #endregion
     }
 }

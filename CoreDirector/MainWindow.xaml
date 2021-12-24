@@ -19,7 +19,7 @@
 
     <WindowChrome.WindowChrome>
         <WindowChrome
-            CaptionHeight="40"
+            CaptionHeight="0"
             CornerRadius="0"
             GlassFrameThickness="-1"
             ResizeBorderThickness="0" />
@@ -32,52 +32,57 @@
             TrayLeftMouseUp="TaskbarIcon_OnTrayLeftMouseUp"
             Visibility="Visible" />
 
-        <TabControl
-            HorizontalAlignment="Stretch"
-            Background="Transparent"
-            WindowChrome.IsHitTestVisibleInChrome="True">
+        <DockPanel>
+            <TabControl
+                x:Name="tabControl"
+                SelectionChanged="TabControl_OnSelectionChanged"
+                HorizontalAlignment="Stretch"
+                Background="Transparent"
+                DockPanel.Dock="Top"
+                WindowChrome.IsHitTestVisibleInChrome="True">
 
-            <TabItem Header="전체">
-                <ListView
-                    x:Name="processListView"
-                    HorizontalContentAlignment="Stretch"
-                    Background="White"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <TabItem Header="전체" />
+                <TabItem Header="성능" />
+                <TabItem Header="효율" />
+            </TabControl>
 
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <DockPanel>
-                                <Image
-                                    Width="32"
-                                    Height="32"
-                                    Margin="5"
-                                    HorizontalAlignment="Left"
-                                    DockPanel.Dock="Left"
-                                    Source="{Binding IconBitmap, Converter={markups:BitmapToImageSourceConverter}}" />
+            <ListView
+                x:Name="processListView"
+                HorizontalContentAlignment="Stretch"
+                Background="White"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-                                <ComboBox
-                                    Width="110"
-                                    Margin="0,0,5,0"
-                                    HorizontalAlignment="Stretch"
-                                    VerticalAlignment="Center"
-                                    DisplayMemberPath="Description"
-                                    DockPanel.Dock="Right"
-                                    ItemsSource="{Binding Source={markups:Enumeration {x:Type models:CoreType}}}"
-                                    SelectedValue="{Binding Type}"
-                                    SelectedValuePath="Value" />
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Image
+                                Width="32"
+                                Height="32"
+                                Margin="5"
+                                HorizontalAlignment="Left"
+                                DockPanel.Dock="Left"
+                                Source="{Binding IconBitmap, Converter={markups:BitmapToImageSourceConverter}}" />
 
-                                <TextBlock
-                                    Margin="0,0,5,0"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding Name}"
-                                    TextTrimming="CharacterEllipsis" />
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </TabItem>
-            <TabItem Header="성능" />
-            <TabItem Header="효율" />
-        </TabControl>
+                            <ComboBox
+                                Width="110"
+                                Margin="0,0,5,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                DisplayMemberPath="Description"
+                                DockPanel.Dock="Right"
+                                ItemsSource="{Binding Source={markups:Enumeration {x:Type models:CoreType}}}"
+                                SelectedValue="{Binding Type}"
+                                SelectedValuePath="Value" />
+
+                            <TextBlock
+                                Margin="0,0,5,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
     </Grid>
 </Window>

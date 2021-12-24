@@ -9,11 +9,9 @@ namespace CoreDirector.Utilities
     {
         private static Processor? _processor;
 
-        public static void SetAffinity(int processId, CoreType type)
+        public static void SetAffinity(Process process, CoreType type)
         {
             _processor ??= GetProcessor();
-
-            using var process = Process.GetProcessById(processId);
 
             long defaultAffinity = (1 << _processor.ThreadCount) - 1;
             long performanceAffinity = (1 << _processor.ThreadCount - _processor.EfficientCoreCount) - 1;

@@ -53,9 +53,16 @@ namespace CoreDirector.Models
             {
                 Task.Run(() =>
                 {
-                    foreach (var item in Items)
+                    try
                     {
-                        ProcessorUtility.SetAffinity(item.Id, Type);
+                        foreach (var item in Items)
+                        {
+                            ProcessorUtility.SetAffinity(item, Type);
+                        }
+                    }
+                    catch
+                    {
+                        // ignored
                     }
                 });
             }
