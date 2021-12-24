@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,6 +32,7 @@ namespace CoreDirector
         public MainWindow()
         {
             InitializeComponent();
+            labelVersion.Content = $"Core Director {Assembly.GetExecutingAssembly().GetName().Version}";
 
             processListView.ItemsSource = _processes;
             UpdateProcesses();
@@ -106,7 +109,53 @@ namespace CoreDirector
         }
         #endregion
 
+        #region Tray Menu Events
+        private void TrayOpen_OnClick(object sender, RoutedEventArgs e)
+        {
+            Show();
+        }
+
+        private void TrayAbout_OnClick(object sender, RoutedEventArgs e)
+        {
+            OpenUrl("https://github.com/iodes/CoreDirector");
+        }
+
+        private void TrayClose_OnClick(object sender, RoutedEventArgs e)
+        {
+            _processWatcher.Dispose();
+            Application.Current.Shutdown();
+        }
+        #endregion
+
         #region Private Methods
+        private void OpenUrl(string url)
+        {
+            try
+            {
+                Process.Start(url);
+            }
+            catch
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    url = url.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", url);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", url);
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
         private void UpdateProcesses()
         {
             Dispatcher.Invoke(() => progressRing.IsActive = true);

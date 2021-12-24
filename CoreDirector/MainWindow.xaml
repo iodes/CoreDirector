@@ -31,7 +31,20 @@
             IconSource="/Logo.ico"
             ToolTipText="CoreDirector"
             TrayLeftMouseUp="TaskbarIcon_OnTrayLeftMouseUp"
-            Visibility="Visible" />
+            Visibility="Visible">
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <Label
+                        x:Name="labelVersion"
+                        Content="CoreDirector"
+                        IsEnabled="False" />
+                    <Separator />
+                    <MenuItem Click="TrayOpen_OnClick" Header="열기..." />
+                    <MenuItem Click="TrayAbout_OnClick" Header="프로그램 정보..." />
+                    <MenuItem Click="TrayClose_OnClick" Header="프로그램 종료" />
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
 
         <DockPanel>
             <TabControl
