@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using CoreDirector.Extensions;
 using CoreDirector.Interop;
 using CoreDirector.Models;
@@ -106,29 +105,44 @@ namespace CoreDirector
         private void UpdateProcesses()
         {
             _processes.Clear();
+            Process[] processes = Process.GetProcesses();
 
-            IEnumerable<IGrouping<string, Process>> processes = Process.GetProcesses()
-                .OrderBy(x => x.ProcessName)
-                .GroupBy(x => x.ProcessName);
-
-            foreach (IGrouping<string, Process> processGroup in processes)
+            try
             {
-                var process = processGroup.FirstOrDefault();
-                var filePath = process?.GetSafeFileName();
+                IEnumerable<IGrouping<string, Process>> processGroups = processes
+                    .OrderBy(x => x.ProcessName)
+                    .GroupBy(x => x.ProcessName);
 
-                if (string.IsNullOrEmpty(filePath))
-                    continue;
-
-                ImageSource? icon = null;
-
-                Dispatcher.Invoke(() =>
+                foreach (IGrouping<string, Process> processGroup in processGroups)
                 {
-                    icon = !string.IsNullOrEmpty(filePath)
-                        ? System.Drawing.Icon.ExtractAssociatedIcon(filePath)?.ToImageSource()
-                        : new BitmapImage();
-                });
+                    var process = processGroup.FirstOrDefault();
 
-                _processes.Add(new AppProcess(filePath, icon!));
+                    if (process is null)
+                        continue;
+
+                    var filePath = process.GetSafeFileName();
+
+                    if (string.IsNullOrEmpty(filePath))
+                        continue;
+
+                    ImageSource? icon = null;
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        icon = !string.IsNullOrEmpty(filePath)
+                            ? System.Drawing.Icon.ExtractAssociatedIcon(filePath)?.ToImageSource()
+                            : default;
+                    });
+
+                    _processes.Add(new AppProcess(process.Id, filePath, icon!));
+                }
+            }
+            finally
+            {
+                foreach (var process in processes)
+                {
+                    process.Dispose();
+                }
             }
         }
     }
