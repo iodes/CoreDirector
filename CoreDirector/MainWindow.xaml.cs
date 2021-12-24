@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
 using System.Windows.Media;
+using CoreDirector.Commons;
 using CoreDirector.Interop;
 using CoreDirector.Managers;
 using CoreDirector.Models;
@@ -18,6 +20,8 @@ namespace CoreDirector
     {
         #region Fields
         private readonly object _lock = new();
+
+        private readonly ProcessWatcher _processWatcher = new();
 
         private ObservableCollection<AppProcess> _processes { get; } = new();
         #endregion
@@ -33,6 +37,7 @@ namespace CoreDirector
             Deactivated += OnDeactivated;
 
             BindingOperations.EnableCollectionSynchronization(_processes, _lock);
+            _processWatcher.Start();
 
             Hide();
         }
@@ -48,6 +53,8 @@ namespace CoreDirector
 
             if (presentationSource is not null)
                 presentationSource.ContentRendered += PresentationSourceOnContentRendered;
+
+            Task.Run(UpdateProcesses);
         }
 
         private void OnActivated(object? sender, EventArgs e)
@@ -104,7 +111,10 @@ namespace CoreDirector
         {
             _processes.Clear();
 
-            foreach (var appProcess in ProcessManager.GetAppProcesses())
+            IOrderedEnumerable<AppProcess> appProcesses = ProcessManager.GetAppProcesses()
+                .OrderBy(x => x.Name);
+
+            foreach (var appProcess in appProcesses)
             {
                 _processes.Add(appProcess);
             }
