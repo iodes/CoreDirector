@@ -30,11 +30,13 @@ namespace CoreDirector
         public MainWindow()
         {
             InitializeComponent();
-            processListView.ItemsSource = _processes;
 
-            Loaded += OnLoaded;
+            processListView.ItemsSource = _processes;
+            UpdateProcesses();
+
             Activated += OnActivated;
             Deactivated += OnDeactivated;
+            Loaded += OnLoaded;
 
             BindingOperations.EnableCollectionSynchronization(_processes, _lock);
             _processWatcher.Start();
@@ -53,8 +55,6 @@ namespace CoreDirector
 
             if (presentationSource is not null)
                 presentationSource.ContentRendered += PresentationSourceOnContentRendered;
-
-            Task.Run(UpdateProcesses);
         }
 
         private void OnActivated(object? sender, EventArgs e)
@@ -109,6 +109,7 @@ namespace CoreDirector
         #region Private Methods
         private void UpdateProcesses()
         {
+            Dispatcher.Invoke(() => progressRing.IsActive = true);
             _processes.Clear();
 
             IOrderedEnumerable<AppProcess> appProcesses = ProcessManager.GetAppProcesses()
@@ -118,6 +119,8 @@ namespace CoreDirector
             {
                 _processes.Add(appProcess);
             }
+
+            Dispatcher.Invoke(() => progressRing.IsActive = false);
         }
 
         private void EnableMica(HwndSource source, bool darkThemeEnabled)
