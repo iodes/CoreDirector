@@ -191,7 +191,7 @@
             {
             "Name" = "8:#1916"
             "AlwaysCreate" = "11:FALSE"
-            "Condition" = "8:"
+            "Condition" = "8:/Activate"
             "Transitive" = "11:FALSE"
             "Property" = "8:DesktopFolder"
                 "Folders"
@@ -215,7 +215,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CoreDirector"
         "ProductCode" = "8:{86E47086-2A3E-4053-8CC5-2DB11D3A0E56}"
-        "PackageCode" = "8:{7CFA1A75-5F12-41B0-80C0-7857897179C8}"
+        "PackageCode" = "8:{2B6D5185-8699-4CDD-A976-921BEFBAD674}"
         "UpgradeCode" = "8:{8F4432E0-36E7-41B0-8AC0-65BF0B2F2814}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -388,7 +388,7 @@
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_000C98A5887F4D0E9F2A60D50F0FA4BD"
             {
             "Name" = "8:CoreDirector"
-            "Arguments" = "8:"
+            "Arguments" = "8:/Activate"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
@@ -402,7 +402,7 @@
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_1D136AAB60494DF982E364359CB005F3"
             {
             "Name" = "8:CoreDirector"
-            "Arguments" = "8:"
+            "Arguments" = "8:/Activate"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"

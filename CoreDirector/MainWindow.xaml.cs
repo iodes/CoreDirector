@@ -44,7 +44,8 @@ namespace CoreDirector
             BindingOperations.EnableCollectionSynchronization(_processes, _lock);
             _processWatcher.Start();
 
-            Hide();
+            if (!Environment.GetCommandLineArgs().Contains("/Activate", StringComparer.OrdinalIgnoreCase))
+                Hide();
         }
         #endregion
 
