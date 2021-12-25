@@ -32,7 +32,7 @@ namespace CoreDirector
         public MainWindow()
         {
             InitializeComponent();
-            labelVersion.Content = $"Core Director {Assembly.GetExecutingAssembly().GetName().Version}";
+            labelVersion.Content = $"CoreDirector {Assembly.GetExecutingAssembly().GetName().Version}";
 
             processListView.ItemsSource = _processes;
             UpdateProcesses();
