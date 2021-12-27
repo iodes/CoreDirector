@@ -77,7 +77,13 @@ namespace CoreDirector
                 return;
 
             UpdateStyleAttributes(hwndSource);
-            ThemeManager.Current.ActualApplicationThemeChanged += delegate { UpdateStyleAttributes(hwndSource); };
+            UpdateBackgroundColor();
+
+            ThemeManager.Current.ActualApplicationThemeChanged += delegate
+            {
+                UpdateStyleAttributes(hwndSource);
+                UpdateBackgroundColor();
+            };
         }
 
         private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -196,6 +202,13 @@ namespace CoreDirector
         private void UpdateStyleAttributes(HwndSource hwnd)
         {
             EnableMica(hwnd, ThemeManager.Current.ActualApplicationTheme is ApplicationTheme.Dark);
+        }
+
+        private void UpdateBackgroundColor()
+        {
+            processListView.Background = ThemeManager.Current.ActualApplicationTheme is ApplicationTheme.Light
+                ? Brushes.White
+                : Brushes.Black;
         }
 
         private bool FilterListView(object item, CoreType type)
