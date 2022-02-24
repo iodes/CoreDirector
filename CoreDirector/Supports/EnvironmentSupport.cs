@@ -10,11 +10,25 @@ namespace CoreDirector.Supports
         #endregion
 
         #region Constants
+        private const string logsDir = "Logs";
         private const string cacheDir = "Cache";
         private const string config = "Config.json";
         #endregion
 
         #region Properties
+        public static string Logs
+        {
+            get
+            {
+                var combine = Path.Combine(Storage, logsDir);
+
+                if (!Directory.Exists(combine))
+                    Directory.CreateDirectory(combine);
+
+                return combine;
+            }
+        }
+
         public static string Cache
         {
             get

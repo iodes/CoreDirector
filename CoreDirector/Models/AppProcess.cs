@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ using CoreDirector.Managers;
 using CoreDirector.Supports;
 using CoreDirector.Utilities;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace CoreDirector.Models
 {
@@ -95,9 +97,9 @@ namespace CoreDirector.Models
 
                     ConfigManager.Save();
                 }
-                catch
+                catch (Exception e)
                 {
-                    // ignored
+                    Log.Warning(e, "An error occurred while applying affinity.");
                 }
             });
         }
