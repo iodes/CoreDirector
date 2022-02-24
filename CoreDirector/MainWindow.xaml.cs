@@ -181,22 +181,29 @@ namespace CoreDirector
 
         private void EnableMica(HwndSource source, bool darkThemeEnabled)
         {
-            if (Environment.OSVersion.Version.Build < 22000)
-                return;
-
-            int trueValue = 0x01;
-            int falseValue = 0x00;
-
-            if (darkThemeEnabled)
+            try
             {
-                NativeMethods.DwmSetWindowAttribute(source.Handle, NativeMethods.DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref trueValue, Marshal.SizeOf(typeof(int)));
-            }
-            else
-            {
-                NativeMethods.DwmSetWindowAttribute(source.Handle, NativeMethods.DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref falseValue, Marshal.SizeOf(typeof(int)));
-            }
+                if (Environment.OSVersion.Version.Build < 22000)
+                    return;
 
-            NativeMethods.DwmSetWindowAttribute(source.Handle, NativeMethods.DwmWindowAttribute.DWMWA_MICA_EFFECT, ref trueValue, Marshal.SizeOf(typeof(int)));
+                int trueValue = 0x01;
+                int falseValue = 0x00;
+
+                if (darkThemeEnabled)
+                {
+                    NativeMethods.DwmSetWindowAttribute(source.Handle, NativeMethods.DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref trueValue, Marshal.SizeOf(typeof(int)));
+                }
+                else
+                {
+                    NativeMethods.DwmSetWindowAttribute(source.Handle, NativeMethods.DwmWindowAttribute.DWMWA_USE_IMMERSIVE_DARK_MODE, ref falseValue, Marshal.SizeOf(typeof(int)));
+                }
+
+                NativeMethods.DwmSetWindowAttribute(source.Handle, NativeMethods.DwmWindowAttribute.DWMWA_MICA_EFFECT, ref trueValue, Marshal.SizeOf(typeof(int)));
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void UpdateStyleAttributes(HwndSource hwnd)

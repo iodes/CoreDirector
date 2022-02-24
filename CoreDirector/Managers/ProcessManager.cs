@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using CoreDirector.Extensions;
 using CoreDirector.Models;
 using CoreDirector.Supports;
-using CoreDirector.Utilities;
 
 namespace CoreDirector.Managers
 {
@@ -38,9 +36,16 @@ namespace CoreDirector.Managers
                 if (ConfigManager.Config.SavedProcesses.ContainsKey(processKey))
                     continue;
 
-                var iconBitmap = !string.IsNullOrEmpty(filePath)
-                    ? Icon.ExtractAssociatedIcon(filePath)?.ToBitmap()
-                    : default;
+                Bitmap? iconBitmap = default;
+
+                try
+                {
+                    iconBitmap = Icon.ExtractAssociatedIcon(filePath)?.ToBitmap();
+                }
+                catch
+                {
+                    // ignored
+                }
 
                 yield return new AppProcess(filePath, iconBitmap, processGroup);
             }

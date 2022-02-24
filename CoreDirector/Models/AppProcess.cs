@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using CoreDirector.Managers;
@@ -114,7 +115,7 @@ namespace CoreDirector.Models
 
         public static string CreateKey(string input)
         {
-            using var md5 = System.Security.Cryptography.MD5.Create();
+            using var md5 = MD5.Create();
 
             byte[] inputBytes = Encoding.UTF8.GetBytes(input);
             byte[] hashBytes = md5.ComputeHash(inputBytes);
