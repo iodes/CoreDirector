@@ -85,6 +85,17 @@ namespace CoreDirector.Models
                     if (Type is CoreType.Default)
                     {
                         ConfigManager.Config.SavedProcesses.Remove(Key);
+
+                        IconBitmap?.Dispose();
+                        try
+                        {
+                            IconBitmap = Icon.ExtractAssociatedIcon(FilePath)?.ToBitmap();
+                        }
+                        catch
+                        {
+                            // ignored
+                        }
+
                         File.Delete(cachePath);
                     }
                     else
