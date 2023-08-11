@@ -25,6 +25,9 @@ namespace CoreDirector.Models
         public string Key => CreateKey(FilePath);
 
         [JsonIgnore]
+        public string DisplayName => FileVersionInfo.GetVersionInfo(FilePath).FileDescription ?? "";
+
+        [JsonIgnore]
         public string Name => Path.GetFileName(FilePath);
 
         [JsonProperty("filePath")]
