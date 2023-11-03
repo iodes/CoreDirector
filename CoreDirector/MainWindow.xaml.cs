@@ -88,25 +88,12 @@ namespace CoreDirector
 
         private void TabControl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var collectionView = CollectionViewSource.GetDefaultView(processListView.ItemsSource) as CollectionView;
-
-            if (collectionView is null)
-                return;
-
-            switch (tabControl.SelectedIndex)
-            {
-                case 0:
-                    collectionView.Filter = null;
-                    break;
-
-                case 1:
-                    collectionView.Filter = o => FilterListView(o, CoreType.Performance);
-                    break;
-
-                case 2:
-                    collectionView.Filter = o => FilterListView(o, CoreType.Efficient);
-                    break;
-            }
+            FilterListView();
+        }
+        
+        private void FilterTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            FilterListView();
         }
 
         private void TaskbarIcon_OnTrayLeftMouseUp(object sender, RoutedEventArgs e)
@@ -218,13 +205,41 @@ namespace CoreDirector
                 : Brushes.Black;
         }
 
-        private bool FilterListView(object item, CoreType type)
+        private void FilterListView()
+        {
+            var collectionView = CollectionViewSource.GetDefaultView(processListView.ItemsSource) as CollectionView;
+
+            if (collectionView is null)
+                return;
+
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    collectionView.Filter = o => FilterListView(o, CoreType.Default, CoreType.Performance, CoreType.Efficient);
+                    break;
+
+                case 1:
+                    collectionView.Filter = o => FilterListView(o, CoreType.Performance);
+                    break;
+
+                case 2:
+                    collectionView.Filter = o => FilterListView(o, CoreType.Efficient);
+                    break;
+            }
+        }
+        
+        private bool FilterListView(object item, params CoreType[] types)
         {
             if (item is not AppProcess appProcess)
                 return false;
+            
+            if (!(appProcess.Name.Contains(filterTextBox.Text, StringComparison.InvariantCultureIgnoreCase)
+               || appProcess.DisplayName.Contains(filterTextBox.Text, StringComparison.InvariantCultureIgnoreCase)))
+                return false;
 
-            return appProcess.Type == type;
+            return types.Contains(appProcess.Type);
         }
+        
         #endregion
     }
 }

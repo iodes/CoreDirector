@@ -61,14 +61,79 @@
             </TabControl>
 
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                
+                <Grid Margin="5, 0">
+                    <TextBox 
+                        x:Name="filterTextBox"
+                        TextChanged="FilterTextBox_OnTextChanged"
+                        VerticalAlignment="Center"
+                        Padding="40, 5, 5, 5"
+                        FontSize="14"
+                        BorderBrush="LightGray" />
+                    <TextBlock 
+                        Text="검색"
+                        IsHitTestVisible="False"
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        Margin="40, 10, 10, 10"
+                        Foreground="LightGray"
+                        HorizontalAlignment="Left">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Hidden" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Text, ElementName=filterTextBox}" Value="" />
+                                            <Condition Binding="{Binding IsKeyboardFocused, ElementName=filterTextBox}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Path
+                        Width="15" Height="15"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left"
+                        Margin="15, 0, 0, 0"
+                        SnapsToDevicePixels="True"
+                        Stretch="Fill"
+                        Data="M 19 3 C 13.488281 3 9 7.488281 9 13 C 9 15.394531 9.839844 17.589844 11.25 19.3125 L 3.28125 27.28125 L 4.71875 28.71875 L 12.6875 20.75 C 14.410156 22.160156 16.605469 23 19 23 C 24.511719 23 29 18.511719 29 13 C 29 7.488281 24.511719 3 19 3 Z M 19 5 C 23.429688 5 27 8.570313 27 13 C 27 17.429688 23.429688 21 19 21 C 14.570313 21 11 17.429688 11 13 C 11 8.570313 14.570313 5 19 5 Z">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="DimGray" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Text, ElementName=filterTextBox}" Value="" />
+                                            <Condition Binding="{Binding IsKeyboardFocused, ElementName=filterTextBox}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <MultiDataTrigger.Setters>
+                                            <Setter Property="Fill" Value="DarkGray" />
+                                        </MultiDataTrigger.Setters>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                </Grid>
                 <ListView
                     x:Name="processListView"
                     HorizontalContentAlignment="Stretch"
                     Background="White"
+                    Grid.Row="1"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
                     <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="{x:Type models:AppProcess}">
                             <DockPanel>
                                 <Image
                                     Width="32"
@@ -89,11 +154,39 @@
                                     SelectedValue="{Binding Type}"
                                     SelectedValuePath="Value" />
 
-                                <TextBlock
-                                    Margin="0,0,5,0"
+                                <StackPanel
                                     VerticalAlignment="Center"
-                                    Text="{Binding Name}"
-                                    TextTrimming="CharacterEllipsis" />
+                                    Margin="5,0">
+                                    <TextBlock
+                                        FontSize="14"
+                                        Text="{Binding DisplayName}"
+                                        TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock
+                                        Text="{Binding Name}"
+                                        TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontSize" Value="11" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding DisplayName}" Value="">
+                                                        <Setter Property="FontSize" Value="14" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </StackPanel>
                             </DockPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -103,6 +196,7 @@
                     x:Name="progressRing"
                     Width="50"
                     Height="50"
+                    Grid.Row="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center" />
             </Grid>
