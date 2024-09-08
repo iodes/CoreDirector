@@ -2,6 +2,7 @@
 using CoreDirector.Models;
 using CoreDirector.Supports;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace CoreDirector.Managers
 {
@@ -21,8 +22,22 @@ namespace CoreDirector.Managers
                     Save();
                 }
 
-                var json = File.ReadAllText(EnvironmentSupport.Config);
-                _config = JsonConvert.DeserializeObject<AppConfig>(json)!;
+                try
+                {
+                    var json = File.ReadAllText(EnvironmentSupport.Config);
+                    _config = JsonConvert.DeserializeObject<AppConfig>(json);
+                }
+                catch (JsonSerializationException e)
+                {
+                    _config = new AppConfig();
+                    Log.Warning(e, "Can't read config file");
+                }
+
+                if (_config?.SavedProcesses == null)
+                {
+                    _config = new AppConfig();
+                    Save();
+                }
 
                 return _config;
             }
